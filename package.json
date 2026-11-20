@@ -1,6 +1,6 @@
 {
   "name": "hexo-game-ratings",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Automatic Steam, Epic Games Store and Xbox player-rating cards for Hexo posts.",
   "main": "index.js",
   "type": "commonjs",

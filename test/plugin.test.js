@@ -32,6 +32,8 @@ test('Hexo plugin renders one Epic card after H2 and injects bundled CSS', async
   const generators = {};
   const injections = {};
   const tags = {};
+  fs.mkdirSync(path.join(tmp, 'source', '_data'), {recursive:true});
+  fs.writeFileSync(path.join(tmp, 'source', '_data', 'epic-ratings.json'), JSON.stringify({checkedAt:'2026-11-20', ratings:{'stocking-angel-32af97':{value:4.5,checkedAt:'2026-11-20',sourceUrl:'https://store.epicgames.com/p/stocking-angel-32af97'}}}));
   global.hexo = {
     base_dir: tmp,
     config: {root: '/', game_ratings:{categories:['游戏'],show_unlinked:false,epic:{auto_refresh:false}}},
@@ -74,6 +76,40 @@ test('Hexo plugin renders one Epic card after H2 and injects bundled CSS', async
     };
     for (const {fn} of filters.after_post_render) await fn(other);
     assert.doesNotMatch(other.content,/steam-review-card/);
+
+    const originalFetch=global.fetch;
+    global.fetch=async (url)=>{
+      if(String(url).includes('IUserReviewsService')){
+        const appid=JSON.parse(new URL(String(url)).searchParams.get('input_json')).appid;
+        const empty=appid===111111;
+        return {ok:true,json:async()=>({response:{query_summary:{total_positive:empty?0:80,total_negative:empty?0:20,total_reviews:empty?0:100,review_score:empty?0:8}}})};
+      }
+      if(String(url).includes('xbox.com'))throw new Error('simulated Xbox fetch failure');
+      throw new Error('unexpected fetch: '+url);
+    };
+    try {
+      // No linked platform (including legacy show_unlinked:true) never shows a placeholder.
+      global.hexo.config.game_ratings.show_unlinked=true;
+      const noScoreCases=[
+        {name:'No platform link', raw:'No links'},
+        {name:'Bilibili source', raw:'https://www.bilibili.com/video/BV1234'},
+        {name:'Epic missing verified rating', raw:'https://store.epicgames.com/p/unknown-demo'},
+        {name:'Epic search/browse', raw:'https://store.epicgames.com/zh-CN/browse?q=anything'},
+        {name:'Xbox fetch failure', raw:'https://www.xbox.com/en-US/games/store/demo/9NBLGGH4R315'},
+        {name:'Steam no reviews', raw:'https://store.steampowered.com/app/111111/'},
+      ];
+      for(const sample of noScoreCases){
+        const item={layout:'post',categories:{data:[{name:'游戏'}]},raw:sample.raw,content:'<h2>Title</h2>\n<p>Original introduction</p>'};
+        for(const {fn} of filters.after_post_render.sort((a,b)=>a.priority-b.priority))await fn(item);
+        assert.doesNotMatch(item.content,/steam-review-card|store-review-no-score/,sample.name);
+        assert.match(item.content,/Original introduction/,sample.name);
+      }
+      const steamGood={layout:'post',categories:{data:[{name:'游戏'}]},raw:'https://store.steampowered.com/app/222222/',content:'<h2>Good</h2><p>Intro</p>'};
+      for(const {fn} of filters.after_post_render.sort((a,b)=>a.priority-b.priority))await fn(steamGood);
+      assert.match(steamGood.content,/steam-review-card/);
+      assert.match(steamGood.content,/80\.0%/);
+    } finally {global.fetch=originalFetch;}
+
   } finally {
     delete global.hexo;
     fs.rmSync(tmp,{recursive:true,force:true});

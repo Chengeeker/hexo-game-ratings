@@ -15,14 +15,14 @@ A lightweight open-source Hexo plugin that generates player-rating cards for **S
 - **Epic Games**：自动发现商品链接，在 `hexo generate` 时尝试通过外部公开网页文本获取官方五星玩家评分。已获取的分数写入本地快照；访问受限、无评分或失败时保留旧值，不阻止构建。
 - 自动在文章**第一个 Markdown `##` 二级标题之后**、其余正文之前插入卡片。无 `##` 时回退到正文开头。
 - 适配深色模式和手机布局；CSS 由插件自动生成并注入，无需修改主题文件。
-- 不为哔哩哔哩等其他商店生成评分。默认没有可识别商店链接时不显示占位卡。
+- **仅在存在有效玩家评分时显示卡片**。哔哩哔哩、其他不支持的平台、未关联商店链接、获取失败且无有效缓存、暂无评价等情况，不生成空白或错误提示卡。
 
 ### 安装
 
 要求 Node.js 18+、Hexo 7+。在 Hexo 站点目录执行：
 
 ```bash
-npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0"
+npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.1"
 npx hexo clean
 npx hexo generate
 ```
@@ -30,7 +30,7 @@ npx hexo generate
 **npm 12+** 默认禁止安装 Git 依赖，需要使用 `--allow-git=root` 允许项目明确声明的 Git 依赖：
 
 ```bash
-npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0" --allow-git=root
+npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.1" --allow-git=root
 ```
 
 为了使今后的 `npm ci` 等安装命令也可以正常工作，可以在你的网站根目录 `.npmrc` 中添加 `allow-git=root`。这只允许项目直接列出的 Git 依赖，**不需要**设置 `allow-git=all`。如已有其他 Hexo 插件的 peer dependency 版本冲突，需单独处理其兼容性。插件目前直接在 GitHub 开源，尚未发布到 npm 注册表。
@@ -69,7 +69,7 @@ game_ratings:
     timeout_ms: 14000
 ```
 
-`show_unlinked: true` 会在游戏文章没有任何可识别商店链接时显示「未关联 Steam AppID」的简短占位卡；哔哩哔哩链接不会生成该占位卡。
+`show_unlinked` 是向后兼容保留的旧配置项；即使旧配置为 `true`，也不会生成未关联商店的占位卡。
 
 `game_ratings: true` 或 `game_ratings: false` 可以在单篇文章 front-matter 中强制显示/禁用自动处理。
 
@@ -77,7 +77,7 @@ game_ratings:
 
 **不需要手动运行额外脚本。** 每次 `hexo generate`（包括站点的 Cloudflare Pages 部署命令）时，插件会自动扫描新增 Epic 商品链接；一次构建默认最多检查 3 款游戏，定期刷新旧评分，同时记录失败重试时间，避免每次构建重复请求相同的无评分页面。
 
-获取方式是 Jina Reader 的公开网页**纯文本**读取接口，仅解析 Epic 明确标记为 `Epic Player Ratings` 的五星玩家评分。不解析年龄分级、价格或媒体分数；不伪造登录状态，不收集出生日期，不使用 Epic Cookie。第三方服务可能返回 401、403、429、年龄确认页或不含评分的文本，此时**不能保证拿到新游戏的评分**，但 Hexo 仍会继续构建并显示现有快照或「暂无可核实评分」。
+获取方式是 Jina Reader 的公开网页**纯文本**读取接口，仅解析 Epic 明确标记为 `Epic Player Ratings` 的五星玩家评分。不解析年龄分级、价格或媒体分数；不伪造登录状态，不收集出生日期，不使用 Epic Cookie。第三方服务可能返回 401、403、429、年龄确认页或不含评分的文本，此时**不能保证拿到新游戏的评分**，但 Hexo 仍会继续构建；有经过核实的历史快照则显示，没有可核实评分时直接不插入卡片。
 
 如需提高外部读取成功率，可以在构建环境配置 Jina Reader 的 `JINA_API_KEY` 环境变量；**不要**把密钥写入 `_config.yml`、源码或 GitHub。此插件不会将私密登录信息发往外部服务。
 
@@ -118,7 +118,7 @@ npm run check
 
 Hexo Game Ratings automatically inserts review cards after the first H2 heading in game posts. It supports Steam review statistics, Xbox store ratings, and best-effort automatic discovery of public Epic Games star ratings during every Hexo build.
 
-Install from the pinned GitHub release with `npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0"`. npm 12+ additionally needs `--allow-git=root` (or `allow-git=root` in your site's `.npmrc`). Configure categories and Epic refresh behavior using the `game_ratings` options shown above.
+Install from the pinned GitHub release with `npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.1"`. npm 12+ additionally needs `--allow-git=root` (or `allow-git=root` in your site's `.npmrc`). Configure categories and Epic refresh behavior using the `game_ratings` options shown above.
 
 **Important:** Epic scraping is best-effort, may fail due to access controls or age gates, and never invents missing ratings. Existing cached ratings are preserved. The plugin contains no credentials and does not bypass account authentication.
 
