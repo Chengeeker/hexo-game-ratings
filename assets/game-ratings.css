@@ -1,0 +1,224 @@
+/* Steam Review Card — Hexo Butterfly, light/dark/mobile */
+.steam-review-card {
+  --sr-positive: #209965;
+  --sr-negative: #d9555f;
+  --sr-border: var(--hr-border-color, rgba(127, 127, 127, .18));
+  display: block;
+  margin: 24px 0;
+  padding: 21px 24px 16px;
+  border: 1px solid var(--sr-border);
+  border-radius: 18px;
+  background: var(--card-bg, #fff);
+  color: var(--font-color, #333);
+  box-shadow: 0 6px 22px rgba(20, 36, 58, .045);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.steam-review-card,
+.steam-review-card * { box-sizing: border-box; }
+
+.steam-review-overview,
+.steam-review-heading,
+.steam-review-detail,
+.steam-review-final-score,
+.steam-review-meta,
+.steam-review-footer {
+  display: flex;
+}
+
+.steam-review-overview {
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--sr-border);
+}
+
+.steam-review-heading { align-items: center; gap: 12px; }
+.steam-review-heading > span { display: flex; flex-direction: column; }
+.steam-review-heading strong { font-weight: 750; font-size: 16px; line-height: 1.35; }
+.steam-review-heading small { margin-top: 2px; font-size: 12px; opacity: .68; }
+
+.steam-review-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #182538;
+  color: #fff;
+  font-size: 24px;
+}
+
+.steam-review-level {
+  padding: 5px 13px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.steam-review-level.is-positive { color: var(--sr-positive); background: rgba(35, 160, 105, .12); }
+.steam-review-level.is-negative { color: var(--sr-negative); background: rgba(217, 85, 95, .12); }
+.steam-review-level.is-mixed { color: #a37c2e; background: rgba(169, 127, 40, .13); }
+
+.steam-review-detail {
+  align-items: center;
+  gap: 30px;
+  padding: 20px 0;
+}
+
+.steam-review-primary, .steam-review-judgment { flex: 1 1 0; min-width: 0; }
+.steam-review-final-score { align-items: baseline; gap: 8px; }
+.steam-review-final-score > strong {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1.5px;
+  font-variant-numeric: tabular-nums;
+}
+.steam-review-final-score > span { display: flex; flex-direction: column; }
+.steam-review-final-score b { font-size: 16px; font-weight: 600; }
+.steam-review-final-score small { font-size: 11px; opacity: .65; }
+
+#article-container .steam-review-card .steam-review-rate,
+#article-container .steam-review-card .steam-review-verdict,
+#article-container .steam-review-card .steam-review-meta {
+  padding: 0;
+  border: 0;
+}
+#article-container .steam-review-card .steam-review-rate {
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+.steam-review-separator { margin: 0 6px; opacity: .4; }
+.steam-review-updated { display: block; font-size: 11px; opacity: .65; }
+
+#article-container .steam-review-card .steam-review-verdict {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.steam-review-meter {
+  height: 10px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(127, 127, 127, .17);
+}
+.steam-review-meter > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sr-positive);
+}
+
+#article-container .steam-review-card .steam-review-meta {
+  flex-wrap: wrap;
+  gap: 3px 13px;
+  margin: 12px 0 0;
+  font-size: 12px;
+}
+.steam-review-meta b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.steam-review-meta .is-positive { color: var(--sr-positive); }
+.steam-review-meta .is-negative { color: var(--sr-negative); }
+
+.steam-review-footer {
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 13px;
+  border-top: 1px solid var(--sr-border);
+  font-size: 12px;
+}
+.steam-review-footer small { opacity: .66; }
+.steam-review-card .steam-review-footer a {
+  color: var(--theme-color, #49b1f5);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.steam-review-card .steam-review-footer a:hover { text-decoration: underline; }
+.steam-review-card.steam-review-error, .steam-review-card.steam-review-empty { font-size: 13px; text-align: center; }
+.steam-review-error a, .steam-review-empty a { margin-left: 8px; }
+
+/* Epic Games / Xbox use the same card layout as Steam. */
+.store-review-card .steam-review-icon { background: #202127; }
+.store-review-xbox .steam-review-icon { background: #107c10; }
+.store-review-card .store-review-source {
+  background: rgba(128, 128, 128, .12);
+  color: var(--font-color, #333);
+}
+.store-review-xbox .store-review-source {
+  background: rgba(16, 124, 16, .12);
+  color: #17853a;
+}
+.store-review-xbox .steam-review-meter > span { background: #158f3c; }
+html[data-theme="dark"] .store-review-xbox .store-review-source { color: #6edd8d; }
+html[data-theme="dark"] .store-review-xbox .steam-review-meter > span { background: #6edd8d; }
+.store-review-no-score {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.store-review-no-score > strong {
+  font-size: 19px;
+  font-weight: 750;
+}
+#article-container .store-review-no-score p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.store-review-no-score > span {
+  font-size: 12px;
+  opacity: .65;
+}
+.store-review-card .steam-review-detail { padding: 20px 0; }
+.store-review-card .steam-review-final-score small { font-size: 12px; }
+
+
+.steam-review-card.steam-review-unlinked {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  box-shadow: none;
+}
+.steam-review-unlinked > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.steam-review-unlinked strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+.steam-review-unlinked small {
+  font-size: 12px;
+  opacity: .65;
+}
+
+html[data-theme="dark"] .steam-review-card {
+  --sr-positive: #56d6a0;
+  --sr-negative: #ff8992;
+  box-shadow: none;
+}
+
+@media (max-width: 680px) {
+  .steam-review-card { padding: 17px; border-radius: 15px; }
+  .steam-review-detail { flex-direction: column; align-items: stretch; gap: 21px; }
+  .steam-review-final-score > strong { font-size: 40px; }
+  .steam-review-heading strong { font-size: 14px; }
+  .steam-review-level { padding: 5px 9px; font-size: 12px; }
+  .steam-review-footer { align-items: flex-start; flex-direction: column; gap: 6px; }
+}
+@media (max-width: 360px) {
+  .steam-review-heading { gap: 8px; }
+  .steam-review-icon { width: 34px; height: 34px; font-size: 19px; }
+  .steam-review-heading strong { font-size: 13px; }
+}

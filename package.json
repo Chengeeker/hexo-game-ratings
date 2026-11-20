@@ -1,0 +1,44 @@
+{
+  "name": "hexo-game-ratings",
+  "version": "0.1.0",
+  "description": "Automatic Steam, Epic Games Store and Xbox player-rating cards for Hexo posts.",
+  "main": "index.js",
+  "type": "commonjs",
+  "files": [
+    "index.js",
+    "lib/",
+    "assets/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check index.js && node --check lib/steam.js && node --check lib/store.js && node --check lib/epic-refresh.js"
+  },
+  "keywords": [
+    "hexo",
+    "hexo-plugin",
+    "steam",
+    "epic-games",
+    "xbox",
+    "game-ratings",
+    "review",
+    "butterfly"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "hexo": ">=7"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chengeeker/hexo-game-ratings.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Chengeeker/hexo-game-ratings/issues"
+  },
+  "homepage": "https://github.com/Chengeeker/hexo-game-ratings#readme",
+  "author": "Chengeeker"
+}
