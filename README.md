@@ -22,12 +22,18 @@ A lightweight open-source Hexo plugin that generates player-rating cards for **S
 要求 Node.js 18+、Hexo 7+。在 Hexo 站点目录执行：
 
 ```bash
-npm install --save github:Chengeeker/hexo-game-ratings
+npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0"
 npx hexo clean
 npx hexo generate
 ```
 
-GitHub 安装方式在仓库实际公开创建后生效。此项目未声称已发布到 npm 注册表。
+**npm 12+** 默认禁止安装 Git 依赖，需要使用 `--allow-git=root` 允许项目明确声明的 Git 依赖：
+
+```bash
+npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0" --allow-git=root
+```
+
+为了使今后的 `npm ci` 等安装命令也可以正常工作，可以在你的网站根目录 `.npmrc` 中添加 `allow-git=root`。这只允许项目直接列出的 Git 依赖，**不需要**设置 `allow-git=all`。如已有其他 Hexo 插件的 peer dependency 版本冲突，需单独处理其兼容性。插件目前直接在 GitHub 开源，尚未发布到 npm 注册表。
 
 直接在游戏文章添加平台链接（包含 Butterfly 的 `{% btn ... %}` 链接也可以）：
 
@@ -112,7 +118,7 @@ npm run check
 
 Hexo Game Ratings automatically inserts review cards after the first H2 heading in game posts. It supports Steam review statistics, Xbox store ratings, and best-effort automatic discovery of public Epic Games star ratings during every Hexo build.
 
-Install with `npm install --save github:Chengeeker/hexo-game-ratings` after the GitHub repository is created. Configure categories and Epic refresh behavior using the `game_ratings` options shown above.
+Install from the pinned GitHub release with `npm install --save "git+https://github.com/Chengeeker/hexo-game-ratings.git#v0.1.0"`. npm 12+ additionally needs `--allow-git=root` (or `allow-git=root` in your site's `.npmrc`). Configure categories and Epic refresh behavior using the `game_ratings` options shown above.
 
 **Important:** Epic scraping is best-effort, may fail due to access controls or age gates, and never invents missing ratings. Existing cached ratings are preserved. The plugin contains no credentials and does not bypass account authentication.
 
